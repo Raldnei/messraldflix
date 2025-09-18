@@ -81,25 +81,6 @@ allow_origins=["https://seu-dominio.com"]
 
 ---
 
-## 🧪 Exemplos de uso com `curl`
-
-### Upload de vídeo:
-```bash
-curl -F "file=@video.mp4" http://localhost:8000/upload/
-```
-
-### Listar vídeos:
-```bash
-curl http://localhost:8000/list/
-```
-
-### Download (streaming):
-```bash
-curl http://localhost:8000/download/video.mp4 --output video.mp4
-```
-
----
-
 ## 📂 Estrutura do Projeto (sugestão)
 
 ```
