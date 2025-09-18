@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MessRaldFlix - Upload</title>
+  <style>
+    /* Reset básico */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      border-bottom: 2px solid #bb86fc;
+      padding-bottom: 10px;
+      margin: 0 0 15px 0;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    nav li {
+      cursor: pointer;
+      font-weight: 600;
+      color: #bb86fc;
+      transition: color 0.3s ease;
+    }
+
+    nav li:hover {
+      color: #9a6de0;
+    }
+
+    main {
+      background: #1f1f1f;
+      padding: 30px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    input[type="file"] {
+      background: #2a2a2a;
+      border: 2px solid #444;
+      padding: 10px;
+      border-radius: 6px;
+      color: #eee;
+      width: 100%;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="file"]:focus,
+    input[type="file"]:hover {
+      border-color: #bb86fc;
+      outline: none;
+    }
+
+    button {
+      background: #bb86fc;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 6px;
+      color: #121212;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      max-width: 200px;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    button:hover {
+      background: #9a6de0;
+    }
+        a {
+      color: #bb86fc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MessRaldFlix - Filmes e séries</h1>
+    <nav>
+      <ul>
+        <li><a href="#body">Upload</a></li>
+        <li><a href="consumir.html"> Lista/Assistir</a></li>
+
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <input type="file" id="fileInput" />
+    <button onclick="upload()">Enviar</button>
+
+    <script>
+      async function upload() {
+        const input = document.getElementById("fileInput");
+        const file = input.files[0];
+
+        if (!file) {
+          alert("Selecione um arquivo primeiro!");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          const response = await fetch("http://127.0.0.1:8000/upload/", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            alert("Erro no upload: " + (errorData.detail || response.statusText));
+            return;
+          }
+
+          const data = await response.json();
+          alert(data.msg || "Upload realizado com sucesso!");
+        } catch (error) {
+          console.error("Erro no upload:", error);
+          alert("Falha ao realizar o upload. Veja o console para mais detalhes.");
+        }
+      }
+    </script>
+  </main>
+</body>
+</html>

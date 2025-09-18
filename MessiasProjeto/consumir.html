@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MessRaldFlix - Lista de Vídeos</title>
+  <style>
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      border-bottom: 2px solid #bb86fc;
+      padding-bottom: 10px;
+      margin: 0 0 15px 0;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    nav li {
+      font-weight: 600;
+      color: #bb86fc;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    nav li:hover,
+    nav a:hover {
+      color: #9a6de0;
+      text-decoration: underline;
+    }
+
+    nav a {
+      color: #bb86fc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    main {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    button {
+      background: #bb86fc;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      color: #121212;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background: #9a6de0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: #1f1f1f;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      padding: 12px 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+     a {
+      color: #bb86fc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1> MessRaldFlix - Lista de Vídeos Disponíveis</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Upload</a></li>
+        <li><a href="consumir.html">Lista/Assistir</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <button onclick="carregarVideos()">Atualizar Lista</button>
+    <ul id="listaVideos">
+      <li>Carregando vídeos...</li>
+    </ul>
+  </main>
+
+  <script>
+    async function carregarVideos() {
+      const ul = document.getElementById("listaVideos");
+      ul.innerHTML = "<li>Carregando vídeos...</li>";
+
+      try {
+        const response = await fetch("http://127.0.0.1:8000/list/");
+        if (!response.ok) throw new Error("Erro ao buscar a lista");
+
+        const data = await response.json();
+        const videos = data.videos;
+
+        if (!videos || videos.length === 0) {
+          ul.innerHTML = "<li>Nenhum vídeo disponível.</li>";
+          return;
+        }
+
+        ul.innerHTML = "";
+
+        videos.forEach(video => {
+          const li = document.createElement("li");
+          const url = `http://127.0.0.1:8000/download/${encodeURIComponent(video)}`;
+          const a = document.createElement("a");
+          a.href = url;
+          a.target = "_blank";
+          a.textContent = video;
+          li.appendChild(a);
+          ul.appendChild(li);
+        });
+      } catch (error) {
+        ul.innerHTML = `<li>Erro ao carregar vídeos: ${error.message}</li>`;
+      }
+    }
+
+    window.onload = carregarVideos;
+  </script>
+</body>
+</html>
